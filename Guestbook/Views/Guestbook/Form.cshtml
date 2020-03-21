@@ -1,0 +1,42 @@
+﻿@addTagHelper "*, Microsoft.AspNetCore.Mvc.TagHelpers"
+@model Guestbook.Models.GuestbookItem
+@{
+    ViewData["Title"] = "Guestbook";
+}
+
+<div class="">
+    <h1 class="display-4">Write Guestbook</h1>
+
+    <form asp-controller="Guestbook" asp-action="Create">
+
+        @Html.ValidationSummary()
+
+        <div class="row">
+            <div class="col-md-12">
+                @Html.LabelFor(x => x.GuestName)
+                @Html.TextBoxFor(x => x.GuestName)
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                @Html.LabelFor(x => x.Email)
+                @Html.TextBoxFor(x => x.Email)
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                @Html.LabelFor(x => x.Message)
+                @Html.TextAreaFor(x => x.Message)
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <button type="submit">Submit</button>
+            </div>
+        </div>
+    </form>
+
+</div>

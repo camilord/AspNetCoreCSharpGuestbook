@@ -1,0 +1,22 @@
+﻿@model Guestbook.Models.GuestbookItem
+
+    <div class="row">
+        <div class="col-12">
+            <p>
+                <label>Guest Name:</label>
+                <span>@Model.GuestName</span>
+            </p>
+            <p>
+                <label>Email:</label>
+                <span>@Model.Email</span>
+            </p>
+            <p>
+                <label>Message:</label>
+                <span>@Model.Message</span>
+            </p>
+            <p>
+                <label>Date Created:</label>
+                <span>@Model.Created.ToString("D")</span>
+            </p>
+        </div>
+    </div>

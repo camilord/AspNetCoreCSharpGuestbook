@@ -1,0 +1,28 @@
+﻿@model Guestbook.Models.GuestbookItem
+@{
+    Layout = "_Layout";
+}
+@{
+    ViewData["Title"] = "Guestbook Details";
+}
+
+<div class="row">
+    <h1 class="display-4">Guestbook Details</h1>
+    <hr />
+    <div class="col-12">
+        <p>
+            <label>Guest Name:</label>
+            <span class="font-weight-bold">@Model.GuestName</span>
+        </p>
+        <p>
+            <label>Message:</label><br />
+            <quote class="font-weight-bold">@Model.Message</quote>
+        </p>
+        <p>
+            <label>Date Created:</label>
+            <span class="font-weight-bold">@Model.Created.ToString("D")</span>
+        </p>
+        <hr />
+        <p><a class="btn btn-secondary" href="/Guestbook/Index">Back</a></p>
+    </div>
+</div>

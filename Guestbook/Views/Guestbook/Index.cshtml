@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Guestbook";
+}
+
+    <div class="text-left">
+        <h1 class="display-4">Guestbook</h1>
+        <div class="row">
+            <div class="col-12">
+                <span class="float-right"><a class="btn btn-primary" href="/Guestbook/Create">Write</a></span>
+            </div>
+        </div>   
+        <hr />
+        @if (ViewBag.HaveData)
+        {
+            @foreach (var gbItem in Model)
+            {
+                <div class="row">
+                    <div class="col-12">
+                        <p>
+                            <label>Guest Name:</label>
+                            <span class="font-weight-bold">@gbItem.GuestName</span>
+                        </p>
+                        <p>
+                            <label>Message:</label>
+                            @if (@gbItem.Message.ToString().Length > 100)
+                            {
+                                <span class="font-weight-bold">@gbItem.Message.ToString().Substring(0, 100)...</span>
+                            }
+                            else
+                            {
+                                <span class="font-weight-bold">@gbItem.Message</span>
+                            }
+
+                        </p>
+                        <p>
+                            <label>Date Created:</label>
+                            <span class="font-weight-bold">@gbItem.Created.ToString("D")</span>
+                        </p>
+                        @if (@gbItem.Message.ToString().Length > 100)
+                        {
+                            <p class="text-right">
+                                <a href="/Guestbook/Item?Id=@gbItem.Id">Read more...</a>
+                            </p>
+                        }
+                    </div>
+                </div>
+                <hr />
+            }
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-info">No data found.</div>
+                </div>
+            </div>
+        }
+
+    </div>

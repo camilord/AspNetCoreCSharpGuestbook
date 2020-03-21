@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-
+using Guestbook.Models;
 
 namespace Guestbook
 {
@@ -30,6 +30,13 @@ namespace Guestbook
                 var connectionString = Configuration.GetConnectionString("GuestbookDataContext");
                 options.UseSqlServer(connectionString);
             });
+
+            // load config from appsettings.json
+            SystemConfig config = new SystemConfig {
+                RecaptchaSiteKey = Configuration["Recaptcha:SiteKey"],
+                RecaptchaSecretKey = Configuration["Recaptcha:SecretKey"]
+            };
+            services.AddTransient<SystemConfig>(options => config);
 
             services.AddControllersWithViews();
         }
@@ -56,6 +63,13 @@ namespace Guestbook
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "guestbook",
+                    pattern: "{controller=Guestbook}/{action=Index}/{id?}");
             });
         }
     }

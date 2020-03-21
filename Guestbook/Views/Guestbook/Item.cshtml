@@ -16,7 +16,8 @@
         </p>
         <p>
             <label>Message:</label><br />
-            <quote class="font-weight-bold">@Model.Message</quote>
+            <!-- span class="font-weight-bold" style="white-space: pre-line">@Model.Message</span -->
+            <blockquote class="font-weight-bold">@Html.Raw(Model.Message.Replace("\n", "<br />"))</blockquote>
         </p>
         <p>
             <label>Date Created:</label>

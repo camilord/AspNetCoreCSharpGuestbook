@@ -9,6 +9,7 @@ using Guestbook.Models;
 using Guestbook.Entity;
 using Microsoft.EntityFrameworkCore;
 using Guestbook.Utils;
+using JW;
 
 namespace Guestbook.Controllers
 {
@@ -17,22 +18,37 @@ namespace Guestbook.Controllers
     {
         private readonly GuestbookDataContext _db;
         private readonly ILogger<GuestbookController> _logger;
-        private readonly String RecaptchaPrivateKey = "xxxx";
-        private readonly String RecaptchaSiteKey = "xxxxx";
+        private readonly SystemConfig _config;
 
-        public GuestbookController(ILogger<GuestbookController> logger, GuestbookDataContext db)
+        public GuestbookController(ILogger<GuestbookController> logger, GuestbookDataContext db, SystemConfig config)
         {
             _logger = logger;
             _db = db;
+            _config = config;
         }
 
         [Route("Index"), Route("")]
-        public IActionResult Index()
+        public IActionResult Index(int offset = 1)
         {
-            GuestbookItem[] gbItems = _db.GuestbookItem.OrderByDescending(x => x.Created).Take(30).ToArray();
+            int maxPerPage = 10;
+            int total = _db.GuestbookItem.Take(1000).ToArray().Length;
+            int queryOffset = maxPerPage * (offset - 1);
+
+            GuestbookItem[] gbItems = _db.GuestbookItem.OrderByDescending(x => x.Created)
+                                                       .Skip(queryOffset)
+                                                       .Take(maxPerPage)
+                                                       .ToArray();
             ViewBag.HaveData = gbItems.Length > 0;
 
-            return View(gbItems);
+            Pager pagination = new Pager(total, offset, maxPerPage);
+            ViewBag.Pagination = pagination;
+
+            GuestBookViewModel viewModel = new GuestBookViewModel { 
+                GuestbookItems = gbItems,
+                Pagination = pagination
+            };
+
+            return View(viewModel);
         }
 
         [Route("Form")]
@@ -47,7 +63,7 @@ namespace Guestbook.Controllers
         [HttpGet, Route("Create")]
         public IActionResult Create()
         {
-            ViewBag.RecaptchaSiteKey = RecaptchaSiteKey;
+            ViewBag.RecaptchaSiteKey = _config.RecaptchaSiteKey;
             return View();
         }
 
@@ -60,7 +76,7 @@ namespace Guestbook.Controllers
             ReCaptchaV2 recaptcha = new ReCaptchaV2();
             long new_id = 0;
 
-            if (ModelState.IsValid && recaptcha.Verify(RecaptchaPrivateKey, gbItem.Recaptcha, gbItem.IPAddress))
+            if (ModelState.IsValid && recaptcha.Verify(_config.RecaptchaSecretKey, gbItem.Recaptcha, gbItem.IPAddress))
             {
                 _db.GuestbookItem.Add(gbItem);
                 _db.SaveChanges();
@@ -78,7 +94,7 @@ namespace Guestbook.Controllers
             }
              else
             {
-                ViewBag.RecaptchaSiteKey = RecaptchaSiteKey;
+                ViewBag.RecaptchaSiteKey = _config.RecaptchaSiteKey;
                 return View();
             }
         }

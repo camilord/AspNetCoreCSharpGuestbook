@@ -1,0 +1,10 @@
+﻿@model Guestbook.Models.GuestBookViewModel
+
+    <div class="row">
+        <div class="col col-12 text-right">
+            @foreach (var offset in Model.Pagination.Pages)
+            {
+                <a class="btn btn-secondary" href="/Guestbook/Index?offset=@offset">@offset</a> 
+            }
+        </div>
+    </div>
